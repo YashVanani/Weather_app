@@ -39,7 +39,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       if (result == ConnectivityResult.none) {
         /// Notifying when there's no network connectivity.
-        WeatherBloc().add(NetworkNotify());
+        WeatherBloc().add(NetworkNotify(isConnected: false));
       } else {
         /// Notifying when network is available.
         WeatherBloc().add(NetworkNotify(isConnected: true));
@@ -67,9 +67,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
   connectivity() async {
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      // I am connected to a mobile network.
+      return true;
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      // I am connected to a wifi network.
+      return true;
+    } else {
+      return false;
     }
   }
 }

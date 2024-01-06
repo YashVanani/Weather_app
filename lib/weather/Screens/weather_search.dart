@@ -63,12 +63,18 @@ class WeatherPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
                       FocusManager.instance.primaryFocus?.unfocus();
-                      weatherBloc.connectivity();
-                      weatherBloc.add(
-                        FetchWeatherEvent(cityName: cityController.text),
-                      );
+                     bool isOnline = await weatherBloc.connectivity();
+                     if(!isOnline){
+                       SnackBar snackBar = snackBarStyle(CommonString.noInternetConnection, AppColors.redColor);
+                       snackBarKey.currentState?.showSnackBar(snackBar);
+                       return;
+                     } else {
+                       weatherBloc.add(
+                         FetchWeatherEvent(cityName: cityController.text),
+                       );
+                     }
                     },
                     style: ElevatedButton.styleFrom(backgroundColor: AppColors.secondaryColor),
                     child: const Padding(
